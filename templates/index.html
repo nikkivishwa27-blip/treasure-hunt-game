@@ -1,76 +1,237 @@
-{% if page == "start" %}
-🏴‍☠️
-Treasure Hunt
-The Lost Treasure
-Welcome to the Treasure Hunt adventure! Choose your path, collect points and discover the hidden treasure.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% if error %}
-{{ error }}
+    <title>Treasure Hunt - The Lost Treasure</title>
 
-{% endif %}
-Enter Your Name 
-Enter your name
- Start Adventure 🚀
-{% elif page == "location" %}
-🗺️
-Choose Your Location
-Hello {{ player }}!
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-Current Score: {{ score }}
+<body>
 
-🌲 Explore the Forest +10 Points 🏖️ Explore the Beach +5 Points
-{% elif page == "forest" %}
-🌲
-Welcome to the Forest
-You enter a mysterious forest. Two paths are waiting for you.
+<div class="container">
 
-Score: {{ score }}
+    {% if page == "start" %}
 
-🪨 Enter the Dark Cave +10 Points 🌉 Cross the Old Bridge +5 Points
-{% elif page == "beach" %}
-🏖️
-Welcome to the Beach
-You reach a beautiful beach. Choose your next move carefully.
+    <div class="card start-card">
+        <div class="treasure-icon">🏴‍☠️</div>
 
-Score: {{ score }}
+        <h1>Treasure Hunt</h1>
+        <h2>The Lost Treasure</h2>
 
-⛵ Explore the Old Boat +10 Points 🌴 Search Near the Palm Tree +5 Points
-{% elif page == "challenge" %}
-💎
-Final Treasure Challenge
-{{ message }}
+        <p>
+            Welcome to the Treasure Hunt adventure!
+            Choose your path, collect points and discover
+            the hidden treasure.
+        </p>
 
-The treasure is hidden inside one of these three boxes.
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
 
-📦
-1
-📦
-2
-📦
-3
-Choose a box number:
+        <form method="POST" action="/">
+            <label for="name">Enter Your Name</label>
 
-1 - 3
- Open the Box 🔓
-Current Score: {{ score }}
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+                required
+            >
 
-{% elif page == "result" %}
-{% if won %}
-🏆
-Treasure Found!
-{{ result }}
+            <button type="submit">
+                Start Adventure 🚀
+            </button>
+        </form>
+    </div>
 
-{% else %}
-😢
-Treasure Not Found
-{{ result }}
 
-{% endif %}
-Player
+    {% elif page == "location" %}
 
-{{ player }}
-Final Score
+    <div class="card">
+        <div class="treasure-icon">🗺️</div>
 
-{{ score }}
-🔄 Play Again
-{% endif %}
+        <h1>Choose Your Location</h1>
+
+        <p>Hello <strong>{{ player }}</strong>!</p>
+
+        <div class="score-box">
+            <h2>Current Score: {{ score }}</h2>
+        </div>
+
+        <form method="POST" action="/location">
+
+            <button type="submit" name="location" value="forest">
+                🌲 Explore the Forest
+                <span>+10 Points</span>
+            </button>
+
+            <button type="submit" name="location" value="beach">
+                🏖️ Explore the Beach
+                <span>+5 Points</span>
+            </button>
+
+        </form>
+    </div>
+
+
+    {% elif page == "forest" %}
+
+    <div class="card">
+        <div class="treasure-icon">🌲</div>
+
+        <h1>Welcome to the Forest</h1>
+
+        <p>
+            You enter a mysterious forest.
+            Two paths are waiting for you.
+        </p>
+
+        <div class="score-box">
+            <h2>Score: {{ score }}</h2>
+        </div>
+
+        <form method="POST" action="/forest">
+
+            <button type="submit" name="path" value="cave">
+                🪨 Enter the Dark Cave
+                <span>+10 Points</span>
+            </button>
+
+            <button type="submit" name="path" value="bridge">
+                🌉 Cross the Old Bridge
+                <span>+5 Points</span>
+            </button>
+
+        </form>
+    </div>
+
+
+    {% elif page == "beach" %}
+
+    <div class="card">
+        <div class="treasure-icon">🏖️</div>
+
+        <h1>Welcome to the Beach</h1>
+
+        <p>
+            You reach a beautiful beach.
+            Choose your next move carefully.
+        </p>
+
+        <div class="score-box">
+            <h2>Score: {{ score }}</h2>
+        </div>
+
+        <form method="POST" action="/beach">
+
+            <button type="submit" name="path" value="boat">
+                ⛵ Explore the Old Boat
+                <span>+10 Points</span>
+            </button>
+
+            <button type="submit" name="path" value="palm">
+                🌴 Search Near the Palm Tree
+                <span>+5 Points</span>
+            </button>
+
+        </form>
+    </div>
+
+
+    {% elif page == "challenge" %}
+
+    <div class="card">
+        <div class="treasure-icon">💎</div>
+
+        <h1>Final Treasure Challenge</h1>
+
+        {% if message %}
+            <p class="success">{{ message }}</p>
+        {% endif %}
+
+        <p>
+            The treasure is hidden inside
+            one of these three boxes.
+        </p>
+
+        <div class="boxes">
+            <div>📦<br><strong>1</strong></div>
+            <div>📦<br><strong>2</strong></div>
+            <div>📦<br><strong>3</strong></div>
+        </div>
+
+        <form method="POST" action="/challenge">
+
+            <label for="guess">Choose a box number:</label>
+
+            <input
+                type="number"
+                id="guess"
+                name="guess"
+                min="1"
+                max="3"
+                placeholder="1 - 3"
+                required
+            >
+
+            <button type="submit">
+                Open the Box 🔓
+            </button>
+
+        </form>
+
+        <div class="score-box">
+            <h2>Current Score: {{ score }}</h2>
+        </div>
+    </div>
+
+
+    {% elif page == "result" %}
+
+    <div class="card">
+
+        {% if won %}
+
+            <div class="treasure-icon">🏆</div>
+
+            <h1>Treasure Found!</h1>
+
+            <p class="success">{{ result }}</p>
+
+        {% else %}
+
+            <div class="treasure-icon">😢</div>
+
+            <h1>Treasure Not Found</h1>
+
+            <p class="error">{{ result }}</p>
+
+        {% endif %}
+
+        <div class="score-box">
+
+            <p><strong>Player</strong></p>
+            <h2>{{ player }}</h2>
+
+            <p><strong>Final Score</strong></p>
+            <h2>{{ score }}</h2>
+
+        </div>
+
+        <a href="/restart" class="restart-button">
+            🔄 Play Again
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
