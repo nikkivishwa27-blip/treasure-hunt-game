@@ -1,0 +1,76 @@
+{% if page == "start" %}
+🏴‍☠️
+Treasure Hunt
+The Lost Treasure
+Welcome to the Treasure Hunt adventure! Choose your path, collect points and discover the hidden treasure.
+
+{% if error %}
+{{ error }}
+
+{% endif %}
+Enter Your Name 
+Enter your name
+ Start Adventure 🚀
+{% elif page == "location" %}
+🗺️
+Choose Your Location
+Hello {{ player }}!
+
+Current Score: {{ score }}
+
+🌲 Explore the Forest +10 Points 🏖️ Explore the Beach +5 Points
+{% elif page == "forest" %}
+🌲
+Welcome to the Forest
+You enter a mysterious forest. Two paths are waiting for you.
+
+Score: {{ score }}
+
+🪨 Enter the Dark Cave +10 Points 🌉 Cross the Old Bridge +5 Points
+{% elif page == "beach" %}
+🏖️
+Welcome to the Beach
+You reach a beautiful beach. Choose your next move carefully.
+
+Score: {{ score }}
+
+⛵ Explore the Old Boat +10 Points 🌴 Search Near the Palm Tree +5 Points
+{% elif page == "challenge" %}
+💎
+Final Treasure Challenge
+{{ message }}
+
+The treasure is hidden inside one of these three boxes.
+
+📦
+1
+📦
+2
+📦
+3
+Choose a box number:
+
+1 - 3
+ Open the Box 🔓
+Current Score: {{ score }}
+
+{% elif page == "result" %}
+{% if won %}
+🏆
+Treasure Found!
+{{ result }}
+
+{% else %}
+😢
+Treasure Not Found
+{{ result }}
+
+{% endif %}
+Player
+
+{{ player }}
+Final Score
+
+{{ score }}
+🔄 Play Again
+{% endif %}
