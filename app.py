@@ -1,8 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import random
-
+import mysql.connector
 app = Flask(__name__)
-
+# MySQL Database Connection
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Nikki@2748",
+    database="treasure_hunt"
+)
 # Secret key for Flask session
 app.secret_key = "treasure-hunt-ca2"
 
@@ -29,7 +35,6 @@ def index():
 
     return render_template("index.html", page="start")
 
-
 # Location Selection
 @app.route("/location", methods=["GET", "POST"])
 def location():
@@ -40,6 +45,7 @@ def location():
     if request.method == "POST":
 
         choice = request.form.get("location")
+        session["location"] = choice
 
         if choice == "forest":
             session["score"] += 10
@@ -55,8 +61,6 @@ def location():
         player=session["player"],
         score=session["score"]
     )
-
-
 # Forest
 @app.route("/forest", methods=["GET", "POST"])
 def forest():
@@ -67,6 +71,7 @@ def forest():
     if request.method == "POST":
 
         choice = request.form.get("path")
+        session["path"] = choice
 
         if choice == "cave":
             session["score"] += 10
@@ -85,7 +90,6 @@ def forest():
         score=session["score"]
     )
 
-
 # Beach
 @app.route("/beach", methods=["GET", "POST"])
 def beach():
@@ -96,6 +100,7 @@ def beach():
     if request.method == "POST":
 
         choice = request.form.get("path")
+        session["path"] = choice
 
         if choice == "boat":
             session["score"] += 10
@@ -113,8 +118,6 @@ def beach():
         player=session["player"],
         score=session["score"]
     )
-
-
 # Final Treasure Challenge
 @app.route("/challenge", methods=["GET", "POST"])
 def challenge():
@@ -186,7 +189,26 @@ def result():
 
     if "player" not in session:
         return redirect(url_for("index"))
+    # Save game result in MySQL
+    cursor = db.cursor()
 
+    cursor.execute(
+        """
+        INSERT INTO players
+        (player_name, location, path, score, result)
+        VALUES (%s, %s, %s, %s, %s)
+        """,
+        (
+            session["player"],
+            session.get("location", ""),
+            session.get("path", ""),
+            session["score"],
+            "Won" if session.get("won", False) else "Lost"
+        )
+    )
+
+    db.commit()
+    cursor.close()
     return render_template(
         "index.html",
         page="result",
