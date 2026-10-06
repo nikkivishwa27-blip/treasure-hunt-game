@@ -206,7 +206,21 @@ def result():
         result=session.get("result", ""),
         won=session.get("won", False)
     )
+# Player History
+@app.route("/history")
+def history():
+    cursor = db.cursor(dictionary=True)
 
+    cursor.execute("SELECT * FROM players ORDER BY id DESC")
+    players = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "index.html",
+        page="history",
+        players=players
+    )
 
 # Restart Game
 @app.route("/restart")
