@@ -17,6 +17,7 @@
     {% if page == "start" %}
 
     <div class="card start-card">
+
         <div class="treasure-icon">🏴‍☠️</div>
 
         <h1>Treasure Hunt</h1>
@@ -33,6 +34,7 @@
         {% endif %}
 
         <form method="POST" action="/">
+
             <label for="name">Enter Your Name</label>
 
             <input
@@ -46,13 +48,16 @@
             <button type="submit">
                 Start Adventure 🚀
             </button>
+
         </form>
+
     </div>
 
 
     {% elif page == "location" %}
 
     <div class="card">
+
         <div class="treasure-icon">🗺️</div>
 
         <h1>Choose Your Location</h1>
@@ -76,12 +81,14 @@
             </button>
 
         </form>
+
     </div>
 
 
     {% elif page == "forest" %}
 
     <div class="card">
+
         <div class="treasure-icon">🌲</div>
 
         <h1>Welcome to the Forest</h1>
@@ -108,12 +115,14 @@
             </button>
 
         </form>
+
     </div>
 
 
     {% elif page == "beach" %}
 
     <div class="card">
+
         <div class="treasure-icon">🏖️</div>
 
         <h1>Welcome to the Beach</h1>
@@ -140,12 +149,14 @@
             </button>
 
         </form>
+
     </div>
 
 
     {% elif page == "challenge" %}
 
     <div class="card">
+
         <div class="treasure-icon">💎</div>
 
         <h1>Final Treasure Challenge</h1>
@@ -160,14 +171,32 @@
         </p>
 
         <div class="boxes">
-            <div>📦<br><strong>1</strong></div>
-            <div>📦<br><strong>2</strong></div>
-            <div>📦<br><strong>3</strong></div>
+
+            <div>
+                📦
+                <br>
+                <strong>1</strong>
+            </div>
+
+            <div>
+                📦
+                <br>
+                <strong>2</strong>
+            </div>
+
+            <div>
+                📦
+                <br>
+                <strong>3</strong>
+            </div>
+
         </div>
 
         <form method="POST" action="/challenge">
 
-            <label for="guess">Choose a box number:</label>
+            <label for="guess">
+                Choose a box number:
+            </label>
 
             <input
                 type="number"
@@ -188,6 +217,7 @@
         <div class="score-box">
             <h2>Current Score: {{ score }}</h2>
         </div>
+
     </div>
 
 
@@ -201,7 +231,9 @@
 
             <h1>Treasure Found!</h1>
 
-            <p class="success">{{ result }}</p>
+            <p class="success">
+                {{ result }}
+            </p>
 
         {% else %}
 
@@ -209,22 +241,111 @@
 
             <h1>Treasure Not Found</h1>
 
-            <p class="error">{{ result }}</p>
+            <p class="error">
+                {{ result }}
+            </p>
 
         {% endif %}
 
         <div class="score-box">
 
-            <p><strong>Player</strong></p>
+            <p>
+                <strong>Player</strong>
+            </p>
+
             <h2>{{ player }}</h2>
 
-            <p><strong>Final Score</strong></p>
+            <p>
+                <strong>Final Score</strong>
+            </p>
+
             <h2>{{ score }}</h2>
 
         </div>
 
         <a href="/restart" class="restart-button">
             🔄 Play Again
+        </a>
+
+        <br><br>
+
+        <a href="/history" class="restart-button">
+            📊 View Player History
+        </a>
+
+    </div>
+
+
+    {% elif page == "history" %}
+
+    <div class="card">
+
+        <div class="treasure-icon">📊</div>
+
+        <h1>Player History</h1>
+
+        <p>
+            Records saved in the MySQL database
+        </p>
+
+        {% if players %}
+
+        <div class="history-table">
+
+            <table>
+
+                <tr>
+                    <th>Player</th>
+                    <th>Location</th>
+                    <th>Path</th>
+                    <th>Score</th>
+                    <th>Result</th>
+                </tr>
+
+                {% for player in players %}
+
+                <tr>
+
+                    <td>
+                        {{ player.player_name }}
+                    </td>
+
+                    <td>
+                        {{ player.location }}
+                    </td>
+
+                    <td>
+                        {{ player.path }}
+                    </td>
+
+                    <td>
+                        {{ player.score }}
+                    </td>
+
+                    <td>
+                        {{ player.result }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p>
+            No player records found.
+        </p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="/" class="restart-button">
+            🏠 Back to Home
         </a>
 
     </div>
