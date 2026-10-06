@@ -13,7 +13,6 @@ db = mysql.connector.connect(
     database=os.getenv("DB_NAME", "treasure_hunt"),
     port=int(os.getenv("DB_PORT", "3306"))
 )
-
 app.secret_key = "treasure-hunt-ca2"
 
 
