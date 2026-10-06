@@ -1,22 +1,25 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import random
+import os
 import mysql.connector
+
 app = Flask(__name__)
+
 # MySQL Database Connection
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Nikki@2748",
-    database="treasure_hunt"
+    host=os.getenv("DB_HOST", "localhost"),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", ""),
+    database=os.getenv("DB_NAME", "treasure_hunt"),
+    port=int(os.getenv("DB_PORT", "3306"))
 )
-# Secret key for Flask session
+
 app.secret_key = "treasure-hunt-ca2"
 
 
 # Home Page
 @app.route("/", methods=["GET", "POST"])
 def index():
-
     if request.method == "POST":
         name = request.form.get("name", "").strip()
 
@@ -35,15 +38,14 @@ def index():
 
     return render_template("index.html", page="start")
 
+
 # Location Selection
 @app.route("/location", methods=["GET", "POST"])
 def location():
-
     if "player" not in session:
         return redirect(url_for("index"))
 
     if request.method == "POST":
-
         choice = request.form.get("location")
         session["location"] = choice
 
@@ -61,15 +63,15 @@ def location():
         player=session["player"],
         score=session["score"]
     )
+
+
 # Forest
 @app.route("/forest", methods=["GET", "POST"])
 def forest():
-
     if "player" not in session:
         return redirect(url_for("index"))
 
     if request.method == "POST":
-
         choice = request.form.get("path")
         session["path"] = choice
 
@@ -90,15 +92,14 @@ def forest():
         score=session["score"]
     )
 
+
 # Beach
 @app.route("/beach", methods=["GET", "POST"])
 def beach():
-
     if "player" not in session:
         return redirect(url_for("index"))
 
     if request.method == "POST":
-
         choice = request.form.get("path")
         session["path"] = choice
 
@@ -118,15 +119,15 @@ def beach():
         player=session["player"],
         score=session["score"]
     )
+
+
 # Final Treasure Challenge
 @app.route("/challenge", methods=["GET", "POST"])
 def challenge():
-
     if "player" not in session:
         return redirect(url_for("index"))
 
     if request.method == "POST":
-
         guess = request.form.get("guess")
 
         try:
@@ -150,26 +151,14 @@ def challenge():
                 message="Please enter a valid number."
             )
 
-        # Generate random treasure box
         treasure_number = random.randint(1, 3)
 
         if guess == treasure_number:
-
             session["score"] += 20
-
-            session["result"] = (
-                "Congratulations! You found the hidden treasure! 🏆"
-            )
-
+            session["result"] = "Congratulations! You found the hidden treasure! 🏆"
             session["won"] = True
-
         else:
-
-            session["result"] = (
-                "The treasure was hidden in another box. "
-                "Better luck next time!"
-            )
-
+            session["result"] = "The treasure was hidden in another box. Better luck next time!"
             session["won"] = False
 
         return redirect(url_for("result"))
@@ -186,9 +175,9 @@ def challenge():
 # Result Page
 @app.route("/result")
 def result():
-
     if "player" not in session:
         return redirect(url_for("index"))
+
     # Save game result in MySQL
     cursor = db.cursor()
 
@@ -209,6 +198,7 @@ def result():
 
     db.commit()
     cursor.close()
+
     return render_template(
         "index.html",
         page="result",
@@ -222,9 +212,7 @@ def result():
 # Restart Game
 @app.route("/restart")
 def restart():
-
     session.clear()
-
     return redirect(url_for("index"))
 
 
